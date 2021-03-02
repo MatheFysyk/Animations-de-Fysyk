@@ -1,0 +1,63 @@
+#Importation des modules nécessaires
+
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from scipy.integrate import odeint
+
+
+#Constantes
+
+G = 1
+M = 30
+
+
+#Création figure
+
+fig, ax = plt.subplots()
+ax.set_xlim([-4, 4])
+ax.set_ylim([-3, 3])
+ax.set_aspect(1)
+
+Terre, Soleil = plt.Circle((1, 0), 0.005, color="Blue"), plt.Circle((0,0), 0.1, color='Yellow')
+
+ax.add_patch(Soleil)
+
+
+#Calcul de la trajectoire Terre
+
+t = np.linspace(0, 10, 500)
+
+def eq_mvt(P, t):
+    r, theta, dr, dtheta = P
+    dP = (dr, dtheta, r*dtheta**2 - G*M/r**2, -2*dr/r*dtheta)
+    return dP
+    
+sol = odeint(eq_mvt, [2, 0, 0, 2], t)
+ 
+x, y = sol[:,0]*np.cos(sol[:,1]), sol[:,0]*np.sin(sol[:,1])
+#plt.plot(x,y)
+
+
+#Position Terre
+
+Terre.center = x[-1], y[-1]
+ax.add_patch(Terre)
+
+
+#Animation
+
+def init():
+    Terre.center = 1, 0
+    ax.add_patch(Terre)
+    return Terre,
+
+
+def animate(i):
+    Terre.center = x[i], y[i]
+    ax.add_patch(Terre)
+    return Terre,
+
+ani = animation.FuncAnimation(fig, animate, init_func=init, frames=500, blit=False, interval=40)
+ani.save('Mvt terre soleil.mp4', fps=45)
+plt.show()
