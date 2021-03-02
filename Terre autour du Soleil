@@ -15,6 +15,8 @@ M = 30
 #Création figure
 
 fig, ax = plt.subplots()
+
+#Mettre des # si on veut que python adapte la taille de la figure dans la vidéo
 ax.set_xlim([-4, 4])
 ax.set_ylim([-3, 3])
 ax.set_aspect(1)
